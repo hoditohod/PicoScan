@@ -59,7 +59,7 @@ void Raster::triangle(TriVertex* a, TriVertex* b, TriVertex* c) {
     // clamp y values for clipping
     {
         Fix10 clampTop{0};
-        Fix10 clampBottom{height << Fix10::fractionalBits()};
+        Fix10 clampBottom{height};
         yTop = std::max(yTop, clampTop);
         yMid = std::clamp(yMid, clampTop, clampBottom);
         yBottom = std::min(yBottom, clampBottom);
@@ -123,9 +123,9 @@ void Raster::triangle(TriVertex* a, TriVertex* b, TriVertex* c) {
 
 #if 1
 int render(uint32_t width, uint32_t height, uint32_t time, unsigned char* buffer) {
-    TriVertex a{  Fix10{50*1024},  Fix10{50*1024} };
-    TriVertex b{ Fix10{200*1024},  Fix10{80*1024} };
-    TriVertex c{ Fix10{170*1024}, Fix10{200*1024} };
+    TriVertex a{ Fix10{ 50}, Fix10{ 50} };
+    TriVertex b{ Fix10{200}, Fix10{ 80} };
+    TriVertex c{ Fix10{170}, Fix10{200} };
     Raster rast(320, 240);
     rast.triangle(&a, &b, &c);
     return 8;

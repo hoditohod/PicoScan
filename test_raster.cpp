@@ -27,20 +27,20 @@ public:
 //   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
 
     // a,b,c; a,d,b is in clockwise order
-    TriVertex a{ Fix10{ 5*1024}, Fix10{ 2*1024} };
-    TriVertex b{ Fix10{10*1024}, Fix10{14*1024} };
-    TriVertex c{ Fix10{ 1*1024}, Fix10{ 6*1024} };
-    TriVertex d{ Fix10{13*1024}, Fix10{ 4*1024} };
+    TriVertex a{ Fix10{ 5}, Fix10{ 2} };
+    TriVertex b{ Fix10{10}, Fix10{14} };
+    TriVertex c{ Fix10{ 1}, Fix10{ 6} };
+    TriVertex d{ Fix10{13}, Fix10{ 4} };
 
     // vertices Mirrorred to Top, Right, Bottom, Left edges
-    TriVertex aMT{ Fix10{ 5*1024}, Fix10{-3*1024} };
-    TriVertex aML{ Fix10{-6*1024}, Fix10{ 2*1024} };
-    TriVertex bMB{ Fix10{10*1024}, Fix10{17*1024} };
-    TriVertex bMR{ Fix10{21*1024}, Fix10{14*1024} };
-    TriVertex cML{ Fix10{-2*1024}, Fix10{ 6*1024} };
-    TriVertex cMB{ Fix10{ 1*1024}, Fix10{25*1024} };
-    TriVertex dMR{ Fix10{18*1024}, Fix10{ 4*1024} };
-    TriVertex dMT{ Fix10{13*1024}, Fix10{-5*1024} };
+    TriVertex aMT{ Fix10{ 5}, Fix10{-3} };
+    TriVertex aML{ Fix10{-6}, Fix10{ 2} };
+    TriVertex bMB{ Fix10{10}, Fix10{17} };
+    TriVertex bMR{ Fix10{21}, Fix10{14} };
+    TriVertex cML{ Fix10{-2}, Fix10{ 6} };
+    TriVertex cMB{ Fix10{ 1}, Fix10{25} };
+    TriVertex dMR{ Fix10{18}, Fix10{ 4} };
+    TriVertex dMT{ Fix10{13}, Fix10{-5} };
 
 
     void printBuffer(std::ostream& os = std::cout){
@@ -54,7 +54,7 @@ public:
     }
 #if 1
     bool checkBuffer(const std::string& suffix = {}) {
-        std::string filename = "../test_resources/" + getTestName() + suffix + ".txt";
+         std::string filename = TEST_RESOURCE_DIR + getTestName() + suffix + ".txt";
 
         // get expected file content
         std::string expected;

@@ -44,22 +44,22 @@ struct Fix {
 
 template<int B>
 inline Fix<B> operator+(const Fix<B> lhs, const Fix<B> rhs) {
-    return Fix<B>(lhs.val + rhs.val);
+    return Fix<B>{ lhs.val + rhs.val, PrescaledTag{} };
 }
 
 template<int B>
 inline Fix<B> operator-(const Fix<B> lhs, const Fix<B> rhs) {
-    return Fix<B>(lhs.val - rhs.val);
+    return Fix<B>{ lhs.val - rhs.val, PrescaledTag{} };
 }
 
 template<int B>
 inline Fix<B> operator*(const Fix<B> lhs, const Fix<B> rhs) {
-    return Fix<B>((lhs.val * rhs.val) >> B);
+    return Fix<B>{ (lhs.val * rhs.val) >> B, PrescaledTag{} };
 }
 
 template<int B>
 inline Fix<B> operator/(const Fix<B> lhs, const Fix<B> rhs) {
-    return Fix<B>{ (lhs.val << B) / rhs.val };
+    return Fix<B>{ (lhs.val << B) / rhs.val, PrescaledTag{} };
 }
 
 template<int B>
@@ -83,14 +83,14 @@ inline Fix<B>& operator+=(Fix<B>& rhs, const Fix<B> lhs) {
 template<int B>
 inline Fix<B> ceil(const Fix<B> fix) {
     constexpr int32_t mask = (1 << B) - 1;
-    return Fix<B>{(fix.val + mask) & ~mask};
+    return Fix<B>{ (fix.val + mask) & ~mask, PrescaledTag{} };
 }
 
 
 template<int B>
 inline Fix<B> floor(const Fix<B> fix) {
     constexpr int32_t mask = (1 << B) - 1;
-    return Fix<B>{fix.val & mask};
+    return Fix<B>{ fix.val & mask, PrescaledTag{} };
 }
 
 template<int B>
