@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <vector>
 #include "fix.h"
-
+#include "sbuffer.h"
 
 // Parameters associated to a vertex of a triangle:
 // coordinates, light intensity, texture coordinates
@@ -21,10 +21,7 @@ struct TrapezoidParams {
 
 class Raster {
 public:
-    std::vector<uint8_t> frameBuffer;
-    uint32_t stride; //constexpr on rp2040?
-    int32_t width;
-    int32_t height;
+    SBuffer sBuffer;
     Raster(int32_t width, int32_t height);
     ~Raster() = default;
     void trapezoid(const TrapezoidParams& tp);

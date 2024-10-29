@@ -4,15 +4,13 @@
 #include "log.h"
 
 Raster::Raster(int32_t width, int32_t height) :
-    frameBuffer(width*height),
-    width(width),
-    height(height)
-{ }
+    sBuffer(width, height)
+{}
 
 // IO: going from bottom-up, with reverse fill-convention
 // would allow to replace ceil with floor, sparing one
 // addition per operation
-/* Clipping is supported, if vertex coordinates are out
+/* Clipping is supported. If vertex coordinates are out
 of the screen, then the triangle will render correctly, skipping the non-visible parts. The only source of error is the overflowing of fixpoint calculations. The safe range is generally -1024 to 1024 for both x&y.
 */
 void Raster::triangle(TriVertex* a, TriVertex* b, TriVertex* c) {
@@ -59,7 +57,7 @@ void Raster::triangle(TriVertex* a, TriVertex* b, TriVertex* c) {
     // clamp y values for clipping
     {
         Fix10 clampTop{0};
-        Fix10 clampBottom{height};
+        Fix10 clampBottom{sBuffer.height};
         yTop = std::max(yTop, clampTop);
         yMid = std::clamp(yMid, clampTop, clampBottom);
         yBottom = std::min(yBottom, clampBottom);
@@ -134,18 +132,14 @@ int render(uint32_t width, uint32_t height, uint32_t time, unsigned char* buffer
 
 
 void Raster::trapezoid(const TrapezoidParams& tp) {
-    // LOG() << tp;
     auto xLeft = tp.xLeft;
     auto xRight = tp.xRight;
 
     for(int32_t y=tp.yTop; y<tp.yBottom; y++) {
-        // LOG() << y << " " << xLeft << " " << xRight;
         int32_t xLeftInt = std::max(xLeft.toInt(), 0);
-        int32_t xRightInt = std::min(xRight.toInt(), width);
-        for(int32_t x=xLeftInt; x<xRightInt; x++) {
-            // LOG()<< x <<" "<<y;
-            frameBuffer[y*width+x] = 1;
-        }
+        int32_t xRightInt = std::min(xRight.toInt(), sBuffer.width);
+        sBuffer.add(y, {xLeftInt, xRightInt});
+
         xLeft.val += tp.slopeLeft.val;
         xRight.val += tp.slopeRight.val;
     }

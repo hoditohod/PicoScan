@@ -2,10 +2,12 @@
 #include <iostream>
 #include <fstream>
 #include "render.h"
+#include "sbuffer.h"
 
 class RenderTest : public testing::Test {
 public:
     Raster rast{16, 16};
+    FrameBuffer1BPP frameBuffer{rast.sBuffer};
 
 //   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
 // 0 . . . . . . . . . . . . . . . . 0
@@ -43,16 +45,6 @@ public:
     TriVertex dMT{ Fix10{13}, Fix10{-5} };
 
 
-    void printBuffer(std::ostream& os = std::cout){
-        for(int y=0; y<16; y++) {
-            for(int x=0; x<16; x++) {
-                char pix = rast.frameBuffer[y*16+x] ? '#' : '.';
-                 os << pix << " ";
-            }
-            os << std::endl;
-        }
-    }
-#if 1
     bool checkBuffer(const std::string& suffix = {}) {
          std::string filename = TEST_RESOURCE_DIR + getTestName() + suffix + ".txt";
 
@@ -60,9 +52,12 @@ public:
         std::string expected;
         std::getline(std::ifstream(filename), expected, '\0');
 
-        // generate framebuffer text representation
+        // generate framebuffer and text representation
+        frameBuffer.rasterize();
         std::ostringstream oss;
-        printBuffer(oss);
+        //printBuffer(oss);
+        //frameBuffer.print(oss);
+        oss << frameBuffer;
         if (expected == oss.str()) {
             return true;
         }
@@ -74,33 +69,10 @@ public:
 
         std::cout << "Expected:" << std::endl << expected;
         std::cout << "Actual:" << std::endl << oss.str();
+        std::cout << "SBuffer:" << std::endl << rast.sBuffer;
         return false;
     }
-#else
-    bool checkBuffer(const std::string& suffix = {}) {
-        std::string filename = "../test_resources/" + getTestName() + suffix + ".txt";
 
-        // get expected file content
-        std::string expected;
-        std::getline(std::ifstream(filename), expected, '\0');
-
-        // generate framebuffer text representation
-        std::ostringstream oss;
-        printBuffer(oss);
-        if (expected == oss.str()) {
-            return true;
-        }
-
-        // handle failure
-        std::string actualFilename = getTestName() + suffix + "_actual.txt";
-        std::ofstream f(actualFilename);
-        f << oss.str();
-
-        std::cout << "Expected:" << std::endl << expected;
-        std::cout << "Actual:" << std::endl << oss.str();
-        return false;
-    }
-#endif
     std::string getTestName() {
         const testing::TestInfo* const test_info = testing::UnitTest::GetInstance()->current_test_info();
         return std::string{ test_info->test_suite_name() } + "_" + test_info->name();
@@ -113,7 +85,7 @@ public:
 // missing top/bottom
 // missing whole
 // winding order
-
+// adjacent triangles/fill convention
 
 TEST_F(RenderTest, left) {
     rast.triangle(&a, &b, &c);

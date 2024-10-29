@@ -15,6 +15,7 @@ option(BUILD_TESTS "Build unit test executable" ON)
 
 add_library( render OBJECT
     render.cpp
+    sbuffer.cpp
 )
 
 target_compile_options( render
