@@ -17,7 +17,7 @@ public:
 // 4 . . . . . . . . . . . . . d . . 4
 // 5 . . . . . . . . . . . . . . . . 5
 // 6 . c . . . . . . . . . . . . . . 6
-// 7 . . . . . . . . . . . . . . . . 7
+// 7 . . . . . . . x . . . . . . . . 7
 // 8 . . . . . . . . . . . . . . . . 8
 // 9 . . . . . . . . . . . . . . . . 9
 // 0 . . . . . . . . . . . . . . . . 0
@@ -33,6 +33,7 @@ public:
     TriVertex b{ Fix10{10}, Fix10{14} };
     TriVertex c{ Fix10{ 1}, Fix10{ 6} };
     TriVertex d{ Fix10{13}, Fix10{ 4} };
+    TriVertex x{ Fix10{ 7}, Fix10{ 7} };
 
     // vertices Mirrorred to Top, Right, Bottom, Left edges
     TriVertex aMT{ Fix10{ 5}, Fix10{-3} };
@@ -54,9 +55,8 @@ public:
 
         // generate framebuffer and text representation
         frameBuffer.rasterize();
+
         std::ostringstream oss;
-        //printBuffer(oss);
-        //frameBuffer.print(oss);
         oss << frameBuffer;
         if (expected == oss.str()) {
             return true;
@@ -134,5 +134,36 @@ TEST_F(RenderTest, rightClip) { // 1 vertex out
 
 TEST_F(RenderTest, rightClip2) { // 2 vertices out
     rast.triangle(&dMR, &bMR, &c);
+    ASSERT_TRUE(checkBuffer());
+}
+
+TEST_F(RenderTest, fillConvention) {
+    // Triangles in (roughly) the below configuration
+    // There should be no gaps between or overwrites
+    //    ---
+    //   |\ /|
+    //   | X |
+    //   |/ \|
+    //    ---
+    rast.triangle(&c, &x, &a);
+    rast.triangle(&a, &x, &d);
+    rast.triangle(&d, &x, &b);
+    rast.triangle(&c, &x, &b);
+    ASSERT_TRUE(checkBuffer());
+}
+
+
+
+
+// Test functionality of FrameBuffer classes
+class FrameBufferTest : public RenderTest
+{};
+
+TEST_F(FrameBufferTest, xor1bpp) {
+    // 2 partially overlapping triangles, xor should hide the overlapping parts
+    // this test probably goes away with proper sbuffer insertion that forms a partition over the scanline
+    // on the other hand, we need a way to test fill convention (xor in a single framebuffer is not a good idea, todo xor between multiple buffers)
+    rast.triangle(&a, &b, &c);
+    rast.triangle(&c, &b, &d);
     ASSERT_TRUE(checkBuffer());
 }

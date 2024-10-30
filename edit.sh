@@ -1,2 +1,3 @@
 #!/bin/bash
-nano --modernbindings CMakeLists.txt main_termux.cpp fix.h render.h render.cpp test_fix.cpp test_raster.cpp
+# Fire up nano text editor with commonly used files in termux
+nano --modernbindings CMakeLists.txt main_termux.cpp log.h fix.h render.h render.cpp sbuffer.h sbuffer.cpp test_raster.cpp

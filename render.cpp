@@ -13,6 +13,8 @@ Raster::Raster(int32_t width, int32_t height) :
 /* Clipping is supported. If vertex coordinates are out
 of the screen, then the triangle will render correctly, skipping the non-visible parts. The only source of error is the overflowing of fixpoint calculations. The safe range is generally -1024 to 1024 for both x&y.
 */
+// If all vertices are out on the same side (tri definitely not visibe) then an upper layer should reject it
+// If all vertices are out, but on different sides, then there is a potentially visibe part of the triangle, it should render correctly
 void Raster::triangle(TriVertex* a, TriVertex* b, TriVertex* c) {
     // sort vertices top to bottom (may change winding order)
     if (a->y > b->y) std::swap(a, b);
