@@ -85,7 +85,6 @@ public:
 // missing top/bottom
 // missing whole
 // winding order
-// adjacent triangles/fill convention
 
 TEST_F(RenderTest, left) {
     rast.triangle(&a, &b, &c);
@@ -136,6 +135,13 @@ TEST_F(RenderTest, rightClip2) { // 2 vertices out
     rast.triangle(&dMR, &bMR, &c);
     ASSERT_TRUE(checkBuffer());
 }
+
+TEST_F(RenderTest, clip3side) { // all 3 vertices out on different sides
+    rast.triangle(&cML, &dMR, &bMB);
+    ASSERT_TRUE(checkBuffer());
+}
+
+
 
 TEST_F(RenderTest, fillConvention) {
     // Triangles in (roughly) the below configuration
